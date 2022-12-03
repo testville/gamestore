@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product-service-deployment
+  labels:
+    app: product-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: product-service
+  template:
+    metadata:
+      labels:
+        app: product-service
+    spec:
+      containers:
+        - name: product-service
+          image: pgkg/product-service-gamestore:latest
+          args: ["--spring.config.location=application.yml"]
+          volumeMounts:
+          - name: application-properties
+            mountPath: /application.yml
+            subPath: application.yml
+          ports:
+            - containerPort: 8080
+      volumes:
+        - name: application-properties
+          configMap:
+            name: application-properties-product

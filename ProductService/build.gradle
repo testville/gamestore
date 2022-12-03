@@ -1,0 +1,70 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '2.3.2.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+    id 'org.openapi.generator' version "6.2.1"
+    id "org.flywaydb.flyway" version "9.8.1"
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+
+dependencies {
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    compileOnly 'org.projectlombok:lombok:1.18.24'
+    implementation 'org.springframework.boot:spring-boot-starter:2.7.5'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator:2.7.5'
+    implementation 'org.springframework.boot:spring-boot-starter-web:2.7.5'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.7.5'
+    implementation 'org.postgresql:postgresql:42.5.0'
+    implementation "io.swagger.parser.v3:swagger-parser:2.1.9"
+    implementation "org.openapitools:jackson-databind-nullable:0.2.4"
+    implementation 'org.mapstruct:mapstruct:1.5.3.Final'
+    implementation 'javax.persistence:javax.persistence-api:2.2'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis:2.7.5'
+    implementation "com.querydsl:querydsl-jpa:5.0.0"
+    implementation "com.querydsl:querydsl-apt:5.0.0"
+    implementation "com.querydsl:querydsl-core:5.0.0"
+    annotationProcessor("com.querydsl:querydsl-apt:5.0.0:jpa")
+    annotationProcessor("org.springframework.boot:spring-boot-starter-data-jpa:2.7.5")
+    annotationProcessor("org.projectlombok:lombok:1.18.24")
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+openApiGenerate {
+    generatorName = "spring"
+    inputSpec = "$projectDir/api.yaml"
+    outputDir = "$buildDir/generated"
+    apiPackage = "com.gamestore.productservice.api"
+    invokerPackage = "com.gamestore.productservice"
+    modelPackage = "com.gamestore.productservice.models"
+    typeMappings = [
+            'OffsetDateTime': 'Instant',
+            'integer': 'Long',
+            'int': 'Long'
+    ]
+    importMappings = [
+            'java.time.OffsetDateTime' : 'java.time.Instant'
+    ]
+    configOptions = [
+            serializableModel: "true",
+            useOptional: "true",
+            dateLibrary: "java8",
+            interfaceOnly: "true"
+    ]
+}
+
+compileJava.dependsOn tasks.openApiGenerate
+sourceSets.main.java.srcDir "$buildDir/generated/src/main/java"
+sourceSets.main.resources.srcDir "$buildDir/generated/src/main/resources"

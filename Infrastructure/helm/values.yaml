@@ -1,0 +1,9 @@
+productservice:
+  redis:
+    host: host.minikube.internal
+    port: 6379
+    password: gamestorepassword
+  postgresql:
+    url: jdbc:postgresql://host.minikube.internal:5432/productdb
+    username: gamestoreuser
+    password: gamestorepassword

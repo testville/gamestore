@@ -1,0 +1,270 @@
+openapi: 3.0.3
+info:
+  title: ProductService
+  description: ProductService
+  version: 0.1.0
+servers:
+  - url: 'https://localhost:8080/api/v1/products'
+paths:
+  /detailed/{productId}:
+    get:
+      tags:
+        - ProductService
+      summary: Get all information about product with id
+      parameters:
+        - in: path
+          name: productId
+          schema:
+            type: integer
+          required: true
+          description: integer id of product
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductDetailedInfoDTO"
+  /search:
+    get:
+      tags:
+        - ProductService
+      summary: Perform search with specified parameters
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+        - in: query
+          name: tags
+          schema:
+            type: array
+            uniqueItems: true
+            items:
+              type: string
+        - in: query
+          name: price_to
+          schema:
+            type: number
+        - in: query
+          name: sort
+          schema:
+            $ref: "#/components/schemas/SearchSortType"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SearchResultDTO"
+  /categories:
+    get:
+      tags:
+        - ProductService
+      summary: Return tag categories
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TagSectionListDTO"
+
+
+components:
+  schemas:
+
+    SearchSortType:
+      type: string
+      enum:
+        - price
+        - relevance
+        - release_date
+
+    ProductPreviewDTO:
+      title: Product preview
+      type: object
+      required:
+        - id
+        - title
+        - description
+        - multimedia
+        - price
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+          description: Name of product
+          example: Cyberpunk 2077
+        description:
+          type: string
+        price:
+          type: number
+        multimedia:
+          type: array
+          items:
+            $ref: "#/components/schemas/MultimediaDTO"
+        release_date:
+          type: string
+          format: date-time
+          example: 2017-07-21T17:32:28Z
+
+    ProductDetailedInfoDTO:
+      title: Detailed product information
+      type: object
+      required:
+        - id
+        - title
+        - description
+        - multimedia
+        - tags
+        - publisher
+        - platforms
+        - system_requirements
+        - recommendations
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+          description: Name of product
+          example: Cyberpunk 2077
+        description:
+          type: string
+          description: Description of product in markup language
+        multimedia:
+          type: array
+          items:
+            $ref: "#/components/schemas/MultimediaDTO"
+        release_date:
+          type: string
+          format: date-time
+          example: 2017-07-21T17:32:28Z
+        tags:
+          type: array
+          items:
+            type: string
+          description: Tags attached to product
+          example:
+            - action
+            - rpg
+        publisher:
+          type: string
+          description: Publisher of product
+        platforms:
+          type: array
+          items:
+            type: string
+          example:
+            - windows
+            - macOS
+        system_requirements:
+          type: object
+          properties:
+            minimal:
+              $ref: "#/components/schemas/SystemRequirementsDTO"
+            recommended:
+              $ref: "#/components/schemas/SystemRequirementsDTO"
+        recommendations:
+          type: array
+          maxLength: 10
+          items:
+            $ref: "#/components/schemas/ProductPreviewDTO"
+
+    ProductPreviewListDTO:
+      title: Collection
+      description: Collection of products
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProductPreviewDTO"
+
+    TagDTO:
+      title: Tag
+      description: Tag and number of products with tag
+      required:
+        - name
+      properties:
+        name:
+          type: string
+        product_count:
+          type: integer
+          maximum: 1000
+
+    SearchResultDTO:
+      title: Search response
+      description: Search response
+      type: object
+      required:
+        - collection
+        - tags
+      properties:
+        collection:
+          $ref: "#/components/schemas/ProductPreviewListDTO"
+        tags:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: "#/components/schemas/TagDTO"
+
+    MultimediaDTO:
+      title: Multimedia
+      description: Single multimedia item representation entity
+      required:
+        - width
+        - height
+        - type
+        - src
+      properties:
+        width:
+          type: integer
+        height:
+          type: integer
+        type:
+          type: string
+          enum:
+            - img
+            - video
+        src:
+          type: string
+
+    SystemRequirementsDTO:
+      title: System Requirements
+      properties:
+        system:
+          type: string
+        processor:
+          type: string
+        memory:
+          type: string
+        graphics:
+          type: string
+        storage:
+          type: string
+
+    TagSectionDTO:
+      title: Tag section
+      type: object
+      required:
+        - name
+        - tags
+      properties:
+        name:
+          type: string
+        tags:
+          type: array
+          items:
+            $ref: "#/components/schemas/TagDTO"
+
+    TagSectionListDTO:
+      title: List of main categories
+      type: array
+      items:
+        $ref: "#/components/schemas/TagSectionDTO"
+
+
+
+
+  

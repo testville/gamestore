@@ -1,0 +1,58 @@
+openapi: 3.0.3
+info:
+  title: CartService
+  description: CartService
+  version: 1.0.0
+servers:
+  - url: 'https://localhost:8080/api/v1/carts'
+paths:
+  /add/{id}:
+    post:
+      summary: Add product to cart
+      parameters:
+        - in: header
+          name: X-User-Id
+          schema:
+            type: string
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      responses:
+        200:
+          description: "Product added"
+
+  /delete/{id}:
+    delete:
+      summary: Remove product from cart
+      parameters:
+        - in: header
+          name: X-User-Id
+          schema:
+            type: string
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      responses:
+        200:
+          description: "Product deleted"
+
+  /clear:
+    delete:
+      summary: Clear cart for user
+      parameters:
+        - in: header
+          name: X-User-Id
+          schema:
+            type: string
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      responses:
+        200:
+          description: "Product deleted"
