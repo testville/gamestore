@@ -2,6 +2,8 @@
 
 general architecture example ```gamestore.html```
 
+Main service with code ```ProductService```
+
 <h5>REQUIREMENTS:</h5>
 
 1. minikube
